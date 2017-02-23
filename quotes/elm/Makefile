@@ -2,7 +2,9 @@ SRC = src
 BUILD = build
 MAIN = quote
 
-build: clean build-directory js html
+all: build deploy clean
+
+build: build-directory js html
 
 build-directory:
 	mkdir -p $(BUILD)
