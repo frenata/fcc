@@ -27,7 +27,7 @@ type alias Model =
     { weather : Maybe Weather
     , location : Maybe Location
     , city : String
-    , error : Maybe Http.Error
+    , error : Maybe String
     }
 
 
@@ -55,16 +55,19 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GetWeather (Ok weather) ->
-            ( { model | weather = Just weather, error = Nothing }, Cmd.none )
+            if (String.toLower weather.name) == (String.toLower model.city) then
+                ( { model | weather = Just weather, error = Nothing }, Cmd.none )
+            else
+                ( { model | error = Just "Sorry, I don't recognize that place." }, Cmd.none )
 
         GetWeather (Err e) ->
-            ( { model | error = Just e }, Cmd.none )
+            ( { model | error = Just (toString e) }, Cmd.none )
 
         UpdateLocation (Ok location) ->
             ( { model | location = Just location }, pullWeatherFromLocation location )
 
         UpdateLocation (Err e) ->
-            ( model, Cmd.none )
+            ( { model | error = Just "Sorry, I can't detect where you are." }, Cmd.none )
 
         NewCity city ->
             ( { model | city = city }, Cmd.none )
@@ -154,25 +157,31 @@ view model =
             ]
         ]
         [ div []
-            (viewLocation model.location model.city)
-        , div []
-            (viewWeather model.city model.weather)
+            [ h3 [] [ text "Location" ]
+            , (viewError model.error)
+            , (viewLocation model.location model.city)
+            , div []
+                (viewWeather model.city model.weather)
+            ]
         ]
 
 
-viewLocation : Maybe Location -> String -> List (Html Msg)
+viewError error =
+    case error of
+        Nothing ->
+            p [] []
+
+        Just error ->
+            p [] [ text error ]
+
+
 viewLocation location city =
     case location of
         Nothing ->
-            [ h3 [] [ text "Location" ]
-            , p [] [ text "Sorry, I can't detect where you are." ]
-            , cityForm ""
-            ]
+            cityForm ""
 
         Just location ->
-            [ h3 [] [ text "Location" ]
-            , cityForm city
-            ]
+            cityForm city
 
 
 cityForm : String -> Html Msg
@@ -188,7 +197,7 @@ cityForm city =
             [ input [ onInput NewCity, placeholder place ] [] ]
 
 
-viewWeather : String -> Maybe Weather -> List (Html msg)
+viewWeather : String -> Maybe Weather -> List (Html Msg)
 viewWeather location weather =
     case weather of
         Just weather ->
