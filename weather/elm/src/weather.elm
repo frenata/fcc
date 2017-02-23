@@ -8,6 +8,7 @@ import Json.Decode exposing (float, string, Decoder)
 import Json.Decode.Pipeline exposing (decode, required, hardcoded, requiredAt)
 import Geolocation exposing (Location)
 import Task
+import Html.Events.Extra exposing (onEnter)
 
 
 main =
@@ -161,7 +162,7 @@ viewLocation location =
         Nothing ->
             [ h3 [] [ text "Location Blocked" ]
             , p [] [ text "Sorry, I don't know where you are..." ]
-            , input [ onInput NewCity, placeholder "Try your City" ] []
+            , input [ onInput NewCity, onEnter GetCity, placeholder "Try your City" ] []
             , button [ onClick GetCity ] [ text "Submit" ]
             ]
 
