@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (style, placeholder)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode exposing (float, string, Decoder)
 import Json.Decode.Pipeline exposing (decode, required, hardcoded, requiredAt)
@@ -150,27 +150,38 @@ view model =
             ]
         ]
         [ div []
-            (viewLocation model.location)
+            (viewLocation model.location model.city)
         , div []
             (viewWeather model.city model.weather)
         ]
 
 
-viewLocation : Maybe Location -> List (Html Msg)
-viewLocation location =
+viewLocation : Maybe Location -> String -> List (Html Msg)
+viewLocation location city =
     case location of
         Nothing ->
-            [ h3 [] [ text "Location Blocked" ]
-            , p [] [ text "Sorry, I don't know where you are..." ]
-            , input [ onInput NewCity, onEnter GetCity, placeholder "Try your City" ] []
-            , button [ onClick GetCity ] [ text "Submit" ]
+            [ h3 [] [ text "Location" ]
+            , p [] [ text "Sorry, I can't detect where you are." ]
+            , cityForm ""
             ]
 
         Just location ->
-            [ h3 [] [ text "Your Location" ]
-            , p [] [ text (toString location.latitude) ]
-            , p [] [ text (toString location.longitude) ]
+            [ h3 [] [ text "Location" ]
+            , cityForm city
             ]
+
+
+cityForm : String -> Html Msg
+cityForm city =
+    let
+        place =
+            if city == "" then
+                "Where are you?"
+            else
+                city
+    in
+        form [ onSubmit GetCity ]
+            [ input [ onInput NewCity, placeholder place ] [] ]
 
 
 viewWeather : String -> Maybe Weather -> List (Html msg)
