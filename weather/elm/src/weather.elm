@@ -8,7 +8,6 @@ import Json.Decode exposing (float, string, Decoder)
 import Json.Decode.Pipeline exposing (decode, required, hardcoded, requiredAt)
 import Geolocation exposing (Location)
 import Task
-import Html.Events.Extra exposing (onEnter)
 
 
 main =
@@ -94,14 +93,19 @@ pullWeatherFromLocation location =
 
 pullWeatherFromCity : String -> Cmd Msg
 pullWeatherFromCity city =
-    let
-        url =
-            "http://api.openweathermap.org/data/2.5/weather"
-                ++ "?q="
-                ++ city
-                ++ "&APPID=d27113dcf76a61aee27d2ce328629630"
-    in
-        Http.send GetWeather <| get url decodeWeather
+    case city of
+        "" ->
+            Cmd.none
+
+        _ ->
+            let
+                url =
+                    "http://api.openweathermap.org/data/2.5/weather"
+                        ++ "?q="
+                        ++ city
+                        ++ "&APPID=d27113dcf76a61aee27d2ce328629630"
+            in
+                Http.send GetWeather <| get url decodeWeather
 
 
 get : String -> Decoder Weather -> Http.Request Weather
@@ -190,12 +194,20 @@ viewWeather location weather =
         Just weather ->
             [ h3 [] [ text "Current Weather" ]
             , p [] [ text weather.name ]
-            , p [] [ text (toString weather.temp) ]
+            , p []
+                [ text
+                    ((toString (round (celsius weather.temp))) ++ " C")
+                ]
             , p [] [ text weather.description ]
             ]
 
         Nothing ->
             []
+
+
+celsius : Float -> Float
+celsius temp =
+    temp - 273
 
 
 
