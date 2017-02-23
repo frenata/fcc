@@ -56,7 +56,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GetWeather (Ok weather) ->
-            if (String.toLower weather.name) == (String.toLower model.city) then
+            if model.city == "" || (String.toLower weather.name) == (String.toLower model.city) then
                 ( { model | weather = Just weather, error = Nothing }, Cmd.none )
             else
                 ( { model | error = Just ("Sorry, I don't recognize that place.\nDid you mean " ++ weather.name ++ "?") }, Cmd.none )
