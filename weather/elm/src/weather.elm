@@ -8,6 +8,7 @@ import Json.Decode exposing (float, string, Decoder)
 import Json.Decode.Pipeline exposing (decode, required, hardcoded, requiredAt)
 import Geolocation exposing (Location)
 import Task
+import Regex
 
 
 main =
@@ -58,7 +59,7 @@ update msg model =
             if (String.toLower weather.name) == (String.toLower model.city) then
                 ( { model | weather = Just weather, error = Nothing }, Cmd.none )
             else
-                ( { model | error = Just "Sorry, I don't recognize that place." }, Cmd.none )
+                ( { model | error = Just ("Sorry, I don't recognize that place.\nDid you mean " ++ weather.name ++ "?") }, Cmd.none )
 
         GetWeather (Err e) ->
             ( { model | error = Just "Sorry, I can't detect where you are." }, Cmd.none )
@@ -104,7 +105,7 @@ pullWeatherFromCity city =
             let
                 url =
                     "http://api.openweathermap.org/data/2.5/weather"
-                        ++ "?q="
+                        ++ "?type=like&q="
                         ++ city
                         ++ "&APPID=d27113dcf76a61aee27d2ce328629630"
             in
