@@ -1,7 +1,8 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, placeholder)
+import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode exposing (float, string, Decoder)
 import Json.Decode.Pipeline exposing (decode, required, hardcoded, requiredAt)
@@ -23,9 +24,10 @@ main =
 
 
 type alias Model =
-    { weather : Weather
+    { weather : Maybe Weather
     , location : Maybe Location
-    , error : Http.Error
+    , city : String
+    , error : Maybe Http.Error
     }
 
 
@@ -35,7 +37,7 @@ type alias Weather =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model (Weather "" 0 "") Nothing Http.Timeout, getLocation )
+    ( Model Nothing Nothing "" Nothing, getLocation )
 
 
 
@@ -45,30 +47,38 @@ init =
 type Msg
     = GetWeather (Result Http.Error Weather)
     | UpdateLocation (Result Geolocation.Error Location)
+    | NewCity String
+    | GetCity
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GetWeather (Ok weather) ->
-            ( { model | weather = weather }, Cmd.none )
+            ( { model | weather = Just weather, error = Nothing }, Cmd.none )
 
         GetWeather (Err e) ->
-            ( { model | error = e }, Cmd.none )
+            ( { model | error = Just e }, Cmd.none )
 
         UpdateLocation (Ok location) ->
-            ( { model | location = Just location }, pullWeather location )
+            ( { model | location = Just location }, pullWeatherFromLocation location )
 
         UpdateLocation (Err e) ->
             ( model, Cmd.none )
+
+        NewCity city ->
+            ( { model | city = city }, Cmd.none )
+
+        GetCity ->
+            ( model, pullWeatherFromCity model.city )
 
 
 
 --WEATHER functions
 
 
-pullWeather : Location -> Cmd Msg
-pullWeather location =
+pullWeatherFromLocation : Location -> Cmd Msg
+pullWeatherFromLocation location =
     let
         url =
             "http://api.openweathermap.org/data/2.5/weather"
@@ -76,6 +86,18 @@ pullWeather location =
                 ++ toString location.latitude
                 ++ "&lon="
                 ++ toString location.longitude
+                ++ "&APPID=d27113dcf76a61aee27d2ce328629630"
+    in
+        Http.send GetWeather <| get url decodeWeather
+
+
+pullWeatherFromCity : String -> Cmd Msg
+pullWeatherFromCity city =
+    let
+        url =
+            "http://api.openweathermap.org/data/2.5/weather"
+                ++ "?q="
+                ++ city
                 ++ "&APPID=d27113dcf76a61aee27d2ce328629630"
     in
         Http.send GetWeather <| get url decodeWeather
@@ -129,16 +151,18 @@ view model =
         [ div []
             (viewLocation model.location)
         , div []
-            (viewWeather model.location model.weather)
+            (viewWeather model.city model.weather)
         ]
 
 
-viewLocation : Maybe Location -> List (Html msg)
+viewLocation : Maybe Location -> List (Html Msg)
 viewLocation location =
     case location of
         Nothing ->
             [ h3 [] [ text "Location Blocked" ]
             , p [] [ text "Sorry, I don't know where you are..." ]
+            , input [ onInput NewCity, placeholder "Try your City" ] []
+            , button [ onClick GetCity ] [ text "Submit" ]
             ]
 
         Just location ->
@@ -148,10 +172,10 @@ viewLocation location =
             ]
 
 
-viewWeather : Maybe Location -> Weather -> List (Html msg)
+viewWeather : String -> Maybe Weather -> List (Html msg)
 viewWeather location weather =
-    case location of
-        Just location ->
+    case weather of
+        Just weather ->
             [ h3 [] [ text "Current Weather" ]
             , p [] [ text weather.name ]
             , p [] [ text (toString weather.temp) ]
