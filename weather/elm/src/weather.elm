@@ -5,6 +5,8 @@ import Html.Attributes exposing (style)
 import Http
 import Json.Decode exposing (float, string, Decoder)
 import Json.Decode.Pipeline exposing (decode, required, hardcoded, requiredAt)
+import Geolocation exposing (Location)
+import Task
 
 
 main =
@@ -22,6 +24,7 @@ main =
 
 type alias Model =
     { weather : Weather
+    , location : Maybe Location
     , error : Http.Error
     }
 
@@ -32,7 +35,7 @@ type alias Weather =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model (Weather "" 0 "") Http.Timeout, pullWeather )
+    ( Model (Weather "" 0 "") Nothing Http.Timeout, getLocation )
 
 
 
@@ -41,6 +44,7 @@ init =
 
 type Msg
     = GetWeather (Result Http.Error Weather)
+    | UpdateLocation (Result Geolocation.Error Location)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,13 +56,26 @@ update msg model =
         GetWeather (Err e) ->
             ( { model | error = e }, Cmd.none )
 
+        UpdateLocation (Ok location) ->
+            ( { model | location = Just location }, pullWeather location )
 
-pullWeather : Cmd Msg
-pullWeather =
+        UpdateLocation (Err e) ->
+            ( model, Cmd.none )
+
+
+
+--WEATHER functions
+
+
+pullWeather : Location -> Cmd Msg
+pullWeather location =
     let
         url =
             "http://api.openweathermap.org/data/2.5/weather"
-                ++ "?q=jakarta"
+                ++ "?lat="
+                ++ toString location.latitude
+                ++ "&lon="
+                ++ toString location.longitude
                 ++ "&APPID=d27113dcf76a61aee27d2ce328629630"
     in
         Http.send GetWeather <| get url decodeWeather
@@ -86,6 +103,19 @@ decodeWeather =
         |> requiredAt [ "weather", "0", "description" ] string
 
 
+
+--LOCATION functions
+
+
+getLocation : Cmd Msg
+getLocation =
+    Task.attempt UpdateLocation Geolocation.now
+
+
+
+--VIEW
+
+
 view : Model -> Html Msg
 view model =
     div
@@ -96,10 +126,40 @@ view model =
             , ( "margin", "auto" )
             ]
         ]
-        [ p [] [ text model.weather.name ]
-        , p [] [ text (toString model.weather.temp) ]
-        , p [] [ text model.weather.description ]
+        [ div []
+            (viewLocation model.location)
+        , div []
+            (viewWeather model.location model.weather)
         ]
+
+
+viewLocation : Maybe Location -> List (Html msg)
+viewLocation location =
+    case location of
+        Nothing ->
+            [ h3 [] [ text "Location Blocked" ]
+            , p [] [ text "Sorry, I don't know where you are..." ]
+            ]
+
+        Just location ->
+            [ h3 [] [ text "Your Location" ]
+            , p [] [ text (toString location.latitude) ]
+            , p [] [ text (toString location.longitude) ]
+            ]
+
+
+viewWeather : Maybe Location -> Weather -> List (Html msg)
+viewWeather location weather =
+    case location of
+        Just location ->
+            [ h3 [] [ text "Current Weather" ]
+            , p [] [ text weather.name ]
+            , p [] [ text (toString weather.temp) ]
+            , p [] [ text weather.description ]
+            ]
+
+        Nothing ->
+            []
 
 
 
