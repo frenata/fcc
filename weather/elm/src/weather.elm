@@ -61,7 +61,7 @@ update msg model =
                 ( { model | error = Just "Sorry, I don't recognize that place." }, Cmd.none )
 
         GetWeather (Err e) ->
-            ( { model | error = Just (toString e) }, Cmd.none )
+            ( { model | error = Just "Sorry, I can't detect where you are." }, Cmd.none )
 
         UpdateLocation (Ok location) ->
             ( { model | location = Just location }, pullWeatherFromLocation location )
