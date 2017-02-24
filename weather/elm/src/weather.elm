@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (placeholder, class, type_, name, checked, id, style)
+import Html.Attributes exposing (placeholder, class, type_, name, checked, id, style, autofocus)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode exposing (float, string, int, Decoder)
@@ -256,7 +256,7 @@ cityForm city =
                 city
     in
         form [ onSubmit GetCity ]
-            [ input [ onInput NewCity, placeholder place ] [] ]
+            [ input [ onInput NewCity, placeholder place, autofocus True ] [] ]
 
 
 viewDegreesForm : Html Msg
