@@ -1,0 +1,15 @@
+#app {
+	text-align: center;
+	display: block;
+	margin: auto;
+	width: 85%;
+}
+
+#weather {
+	min-height: 150px;
+	margin-top: 25px;
+}
+
+fieldset {
+	border: none;
+}

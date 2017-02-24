@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (style, placeholder, class, type_, name, checked, id)
+import Html.Attributes exposing (placeholder, class, type_, name, checked, id)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode exposing (float, string, int, Decoder)
@@ -168,14 +168,7 @@ getLocation =
 view : Model -> Html Msg
 view model =
     div
-        [ id "app"
-        , style
-            [ ( "width", "85%" )
-            , ( "text-align", "center" )
-            , ( "display", "block" )
-            , ( "margin", "auto" )
-            ]
-        ]
+        [ id "app" ]
         [ (viewWeather model.city model.weather model.degrees)
         , (viewLocation model.location model.city model.error)
         ]
@@ -227,7 +220,7 @@ cityForm city =
 
 viewDegreesForm : Html Msg
 viewDegreesForm =
-    fieldset [ style [ ( "border", "none" ) ] ]
+    fieldset []
         [ label []
             [ input
                 [ name "degrees"
@@ -255,7 +248,7 @@ viewWeather location weather degrees =
     case weather of
         Just weather ->
             div
-                [ id "Weather", style [ ( "min-height", "150px" ), ( "margin-top", "25px" ) ] ]
+                [ id "weather" ]
                 [ h3 [] [ text "Weather" ]
                 , p [] [ text weather.city ]
                 , (displayTemp weather.temp degrees)
@@ -266,7 +259,7 @@ viewWeather location weather degrees =
                 ]
 
         Nothing ->
-            div [ id "Weather", style [ ( "min-height", "150px" ), ( "margin-top", "25px" ) ] ] []
+            div [ id "weather" ] []
 
 
 displayTemp : Float -> Degrees -> Html Msg
