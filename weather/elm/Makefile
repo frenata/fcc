@@ -1,10 +1,12 @@
 SRC = src
 BUILD = build
 MAIN = weather
+CSS = assets/css
+FONTS = assets/font
 
 all: build deploy clean
 
-build: build-directory js html
+build: build-directory js html css fonts
 
 build-directory:
 	mkdir -p $(BUILD)
@@ -17,6 +19,13 @@ js:
 
 html:
 	cp $(SRC)/index.html $(BUILD)/index.html
+
+css:
+	cat $(CSS)/*.css > \
+		$(BUILD)/style.css
+
+fonts: 
+	cp -r $(FONTS) $(BUILD)
 
 deploy:
 	cp CNAME $(BUILD)/CNAME

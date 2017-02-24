@@ -1,10 +1,10 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (style, placeholder)
+import Html.Attributes exposing (style, placeholder, class, type_, name, checked, id)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
-import Json.Decode exposing (float, string, Decoder)
+import Json.Decode exposing (float, string, int, Decoder)
 import Json.Decode.Pipeline exposing (decode, required, hardcoded, requiredAt)
 import Geolocation exposing (Location)
 import Task
@@ -28,17 +28,30 @@ type alias Model =
     { weather : Maybe Weather
     , location : Maybe Location
     , city : String
+    , degrees : Degrees
     , error : Maybe String
     }
 
 
+type Degrees
+    = Celsius
+    | Farenheit
+
+
 type alias Weather =
-    { name : String, temp : Float, description : String }
+    { city : String, temp : Float, description : String, id : Int }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Nothing Nothing "" Nothing, getLocation )
+    ( { weather = Nothing
+      , location = Nothing
+      , city = ""
+      , degrees = Celsius
+      , error = Nothing
+      }
+    , getLocation
+    )
 
 
 
@@ -50,16 +63,17 @@ type Msg
     | UpdateLocation (Result Geolocation.Error Location)
     | NewCity String
     | GetCity
+    | SwitchDegrees Degrees
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GetWeather (Ok weather) ->
-            if model.city == "" || (String.toLower weather.name) == (String.toLower model.city) then
+            if model.city == "" || (String.toLower weather.city) == (String.toLower model.city) then
                 ( { model | weather = Just weather, error = Nothing }, Cmd.none )
             else
-                ( { model | error = Just ("Sorry, I don't recognize that place.\nDid you mean " ++ weather.name ++ "?") }, Cmd.none )
+                ( { model | error = Just ("Sorry, I don't recognize that place.\nDid you mean " ++ weather.city ++ "?") }, Cmd.none )
 
         GetWeather (Err e) ->
             ( { model | error = Just "Sorry, I can't detect where you are." }, Cmd.none )
@@ -75,6 +89,9 @@ update msg model =
 
         GetCity ->
             ( model, pullWeatherFromCity model.city )
+
+        SwitchDegrees degrees ->
+            ( { model | degrees = degrees }, Cmd.none )
 
 
 
@@ -132,6 +149,7 @@ decodeWeather =
         |> required "name" string
         |> requiredAt [ "main", "temp" ] float
         |> requiredAt [ "weather", "0", "description" ] string
+        |> requiredAt [ "weather", "0", "id" ] int
 
 
 
@@ -150,23 +168,31 @@ getLocation =
 view : Model -> Html Msg
 view model =
     div
-        [ style
+        [ id "app"
+        , style
             [ ( "width", "85%" )
             , ( "text-align", "center" )
             , ( "display", "block" )
             , ( "margin", "auto" )
             ]
         ]
-        [ div []
-            [ h3 [] [ text "Location" ]
-            , (viewError model.error)
-            , (viewLocation model.location model.city)
-            , div []
-                (viewWeather model.city model.weather)
-            ]
+        [ (viewWeather model.city model.weather model.degrees)
+        , (viewLocation model.location model.city model.error)
         ]
 
 
+viewLocation : Maybe Location -> String -> Maybe String -> Html Msg
+viewLocation location city error =
+    div
+        [ id "settings" ]
+        [ h3 [] [ text "Settings" ]
+        , (viewError error)
+        , (viewCity location city)
+        , viewDegreesForm
+        ]
+
+
+viewError : Maybe String -> Html Msg
 viewError error =
     case error of
         Nothing ->
@@ -176,7 +202,8 @@ viewError error =
             p [] [ text error ]
 
 
-viewLocation location city =
+viewCity : Maybe Location -> String -> Html Msg
+viewCity location city =
     case location of
         Nothing ->
             cityForm ""
@@ -198,26 +225,62 @@ cityForm city =
             [ input [ onInput NewCity, placeholder place ] [] ]
 
 
-viewWeather : String -> Maybe Weather -> List (Html Msg)
-viewWeather location weather =
+viewDegreesForm : Html Msg
+viewDegreesForm =
+    fieldset [ style [ ( "border", "none" ) ] ]
+        [ label []
+            [ input
+                [ name "degrees"
+                , type_ "radio"
+                , checked True
+                , onClick (SwitchDegrees Celsius)
+                ]
+                []
+            , text "Celsius"
+            ]
+        , label []
+            [ input
+                [ name "degrees"
+                , type_ "radio"
+                , onClick (SwitchDegrees Farenheit)
+                ]
+                []
+            , text "Farenheit"
+            ]
+        ]
+
+
+viewWeather : String -> Maybe Weather -> Degrees -> Html Msg
+viewWeather location weather degrees =
     case weather of
         Just weather ->
-            [ h3 [] [ text "Current Weather" ]
-            , p [] [ text weather.name ]
-            , p []
-                [ text
-                    ((toString (round (celsius weather.temp))) ++ " C")
+            div
+                [ id "Weather", style [ ( "min-height", "150px" ), ( "margin-top", "25px" ) ] ]
+                [ h3 [] [ text "Weather" ]
+                , p [] [ text weather.city ]
+                , (displayTemp weather.temp degrees)
+                , p []
+                    [ i [ class ("wi wi-owm-" ++ (toString weather.id)) ] []
+                    , text (" " ++ weather.description)
+                    ]
                 ]
-            , p [] [ text weather.description ]
-            ]
 
         Nothing ->
-            []
+            div [ id "Weather", style [ ( "min-height", "150px" ), ( "margin-top", "25px" ) ] ] []
 
 
-celsius : Float -> Float
-celsius temp =
-    temp - 273
+displayTemp : Float -> Degrees -> Html Msg
+displayTemp kelvin degrees =
+    let
+        ( temp, letter ) =
+            case degrees of
+                Celsius ->
+                    ( kelvin - 273, " °C" )
+
+                Farenheit ->
+                    ( 1.8 * (kelvin - 273) + 32, " °F" )
+    in
+        p [] [ text (toString (round (temp)) ++ letter) ]
 
 
 
