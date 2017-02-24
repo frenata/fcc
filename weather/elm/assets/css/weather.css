@@ -3,6 +3,8 @@
 	display: block;
 	margin: auto;
 	width: 85%;
+	padding-top: 15px;
+	padding-bottom: 25px;
 }
 
 #weather {
