@@ -1,12 +1,13 @@
 SRC = src
 BUILD = build
 MAIN = weather
+ASSETS = assets
 CSS = assets/css
 FONTS = assets/font
 
 all: build deploy clean
 
-build: build-directory js html css fonts
+build: build-directory js html css fonts favicon
 
 build-directory:
 	mkdir -p $(BUILD)
@@ -26,6 +27,9 @@ css:
 
 fonts: 
 	cp -r $(FONTS) $(BUILD)
+
+favicon:
+	cp $(ASSETS)/favicon.ico $(BUILD)
 
 deploy:
 	cp CNAME $(BUILD)/CNAME
