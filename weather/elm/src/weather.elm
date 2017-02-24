@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (placeholder, class, type_, name, checked, id)
+import Html.Attributes exposing (placeholder, class, type_, name, checked, id, style)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode exposing (float, string, int, Decoder)
@@ -39,7 +39,7 @@ type Degrees
 
 
 type alias Weather =
-    { city : String, temp : Float, description : String, id : Int }
+    { city : String, temp : Float, main : String, description : String, id : Int }
 
 
 init : ( Model, Cmd Msg )
@@ -148,6 +148,7 @@ decodeWeather =
     decode Weather
         |> required "name" string
         |> requiredAt [ "main", "temp" ] float
+        |> requiredAt [ "weather", "0", "main" ] string
         |> requiredAt [ "weather", "0", "description" ] string
         |> requiredAt [ "weather", "0", "id" ] int
 
@@ -168,10 +169,50 @@ getLocation =
 view : Model -> Html Msg
 view model =
     div
-        [ id "app" ]
+        [ id "app"
+        , style [ ( "background-color", bgColor model.weather ) ]
+        ]
         [ (viewWeather model.city model.weather model.degrees)
         , (viewLocation model.location model.city model.error)
         ]
+
+
+bgColor weather =
+    case weather of
+        Nothing ->
+            ""
+
+        Just weather ->
+            case weather.main of
+                "Thunderstorm" ->
+                    "#f4ea7a"
+
+                "Drizzle" ->
+                    "#bac8ef"
+
+                "Rain" ->
+                    "#819eef"
+
+                "Snow" ->
+                    "#efd7ee"
+
+                "Atmosphere" ->
+                    "#7c7678"
+
+                "Clear" ->
+                    "#a0d8a3"
+
+                "Clouds" ->
+                    "#e3e5b7"
+
+                "Extreme" ->
+                    "#f77851"
+
+                "Haze" ->
+                    "#827487"
+
+                _ ->
+                    ""
 
 
 viewLocation : Maybe Location -> String -> Maybe String -> Html Msg
