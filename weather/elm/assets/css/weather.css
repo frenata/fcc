@@ -1,8 +1,6 @@
 #app {
 	text-align: center;
-	padding-top: 15px;
-	padding-bottom: 25px;
-	height:90%;
+	min-height:100%;
 
 	display: flex;
 	flex-direction: column;
@@ -11,11 +9,12 @@
 }
 
 #weather {
-	min-height:150px;
-	flex-shrink: 150px;
+	padding-top:25px;
+	min-height:170px;
+	flex: 0 1 auto;
 }
 #settings {
-	flex-shrink:150px;
+	flex: 0 1 auto;
 }
 
 fieldset {
