@@ -1,8 +1,10 @@
-a {
+/* remove link styling for results */
+#results a {
 	text-decoration: none;
 	color:inherit;
 }
 
+/* main page container */
 #container {
 	display:flex;
 	flex-direction:column;
@@ -14,6 +16,7 @@ a {
 	flex: 0 1 auto;
 }
 
+/* list of results */
 #results {
 	flex: 0 1 auto;
 	display:flex;
@@ -23,6 +26,7 @@ a {
 	width:75%;
 }
 
+/* individual result */
 .result {
 	flex: 0 1 auto;
 	border-style:solid;
@@ -32,10 +36,12 @@ a {
 	width:100%;
 }
 
+/* center the title */
 .result h3 {
 	text-align:center;
 }
 
+/* container for search input and buttons */
 #query {
 	display:flex;
 	flex-direction:column;
@@ -47,6 +53,7 @@ a {
 	text-align:center;
 }
 
+/* container for buttons */
 #buttons {
 	flex: 1 1 auto;
 	display:flex;

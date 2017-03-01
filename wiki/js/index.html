@@ -8,37 +8,35 @@
 					   user-scalable=no"/>
 
 		<link rel="shortcut icon" type="image/x-icon"
-			href="http://quote.frenata.net/favicon.ico" >
+			href="http://wiki-js.frenata.net/favicon.ico" >
 		<link rel="icon" type="image/x-icon"
-			href="http://quote.frenata.net/favicon.ico" >
+			href="http://wiki-js.frenata.net/favicon.ico" >
 		<link rel="stylesheet" type="text/css" href="style.css" />
 	</head>
-<body>
-	<div id="container">
-		<div id="search">
-			<form id="query">
-				<input 
-					placeholder="Search the Wiki!" 
-					autofocus="true"/>
-				<div id="buttons">
-					<button id="search-btn">Search</button>
-					<button id="random-btn">Random</button>
-				</div>
-			</form>
-			<form id="random"
-				action="https://en.wikipedia.org/wiki/Special:Random"
-				method="get"
-				target="_blank">
-			</form>
-		</div>
+	<body>
+		<div id="container">
+			<div id="search">
+				<form id="query">
+					<input 
+						placeholder="Search the Wiki!" 
+						autofocus="true"/>
+					<div id="buttons">
+						<button id="search-btn">Search</button>
+						<button id="random-btn">Random</button>
+					</div>
+				</form>
+			</div>
 
-		<div id="results">
-			<!--<h2>Results</h2>-->
-		</div>
+			<div id="results">
+				<!--<h2>Results</h2>-->
+			</div>
 
-	</div>
+		</div>
+	</body>
+
 	<script>
 
+// pull from the API on clicking search or pressing enter in input
 document.querySelector("#query").addEventListener("submit", 
 	(e) => {
 		getWiki(document.querySelector("#query input").value);
@@ -46,6 +44,7 @@ document.querySelector("#query").addEventListener("submit",
 	}
 	,false);
 
+// open random page when clicking "Random" button
 document.querySelector("#random-btn").addEventListener("click",
 	(e) => {
 		window.open('https://en.wikipedia.org/wiki/Special:Random');
@@ -53,6 +52,7 @@ document.querySelector("#random-btn").addEventListener("click",
 	}
 	,false);
 
+// pull from the wikipedia API
 function getWiki(search) {
 	let url = "https://en.wikipedia.org/w/api.php?" +
 		"action=opensearch&format=json&origin=*&search=" + search;
@@ -64,6 +64,7 @@ function getWiki(search) {
 	);
 }
 
+// write the results of the API pull to the page
 function writeWikiResults(title,description,link){
 	clearResults();
 
@@ -71,10 +72,12 @@ function writeWikiResults(title,description,link){
 		appendResult(title[i],description[i],link[i]));
 }
 
+// remove any old results
 function clearResults() {
 	document.querySelector("#results").innerHTML = "";
 }
 
+// build a div containing a result and add it to the list
 function appendResult(title,description,link) {
 	document.querySelector("#results").innerHTML += 
 		"<a target=\"_blank\" href=\"" 
@@ -85,6 +88,7 @@ function appendResult(title,description,link) {
 		"</div></a>";
 }
 
+// pull from a JSON API
 function getJSON(url, callback) {
 	let xhr = new XMLHttpRequest();
 
@@ -98,5 +102,4 @@ function getJSON(url, callback) {
 }
 
 	</script>
-</body>
 </html>
