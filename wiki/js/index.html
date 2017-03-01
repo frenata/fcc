@@ -2,53 +2,61 @@
 <html>
 	<head>
 		<title>Wiki Viewer</title>
+
+		<meta name="viewport"
+			  content="width=device-width,
+					   user-scalable=no"/>
+
 		<link rel="shortcut icon" type="image/x-icon"
 			href="http://quote.frenata.net/favicon.ico" >
 		<link rel="icon" type="image/x-icon"
 			href="http://quote.frenata.net/favicon.ico" >
+		<link rel="stylesheet" type="text/css" href="style.css" />
+
 		<script src="https://ajax.googleapis.com/ajax/
 			libs/jquery/3.1.1/jquery.min.js">
 		</script>
-
-		<style>
-a {
-	text-decoration: none;
-	color:inherit;
-}
-		</style>
-
 	</head>
-	<body>
-
+<body>
+	<div id="container">
 		<div id="search">
-			<form>
+			<form id="query">
 				<input 
-					id="query" 
 					placeholder="Search the Wiki!" 
 					autofocus="true"/>
-				<button id="queryb">Search</button>
+				<div id="buttons">
+					<button id="search-btn">Search</button>
+					<button 
+						id="random-btn"
+						onClick="window.open(
+						'https://en.wikipedia.org/wiki/Special:Random'
+						); return false;">
+						Random
+					</button>
+				</div>
 			</form>
-			<form 
+			<form id="random"
 				action="https://en.wikipedia.org/wiki/Special:Random"
 				method="get"
 				target="_blank">
-				<button id="random" >Random</button>
 			</form>
 		</div>
 
 		<div id="results">
-			<h2>Results</h2>
+			<!--<h2>Results</h2>-->
 		</div>
 
-		<script>
+	</div>
+	<script>
 
-$("#search").submit(() => {
-	getWiki($("#query").val());
+$("#query").submit(() => {
+	getWiki($("#query input").val());
 	return false;
 });
 
 function getWiki(search) {
-	let url = "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&search=" + search;
+	let url = "https://en.wikipedia.org/w/api.php?" +
+		"action=opensearch&format=json&origin=*&search=" + search;
 	$.getJSON( url, { })
 		.done( response => {
 			console.log(response);
@@ -67,19 +75,20 @@ function writeWikiResults(title,description,link){
 }
 
 function clearResults() {
+	//$("#results").html("<h2>Results</h2>");
 	$("#results").html("");
 }
 
 function appendResult(title,description,link) {
 	$("#results").append(
 		"<a target=\"_blank\" href=\"" 
-		+ link + "\">" + 
-		"<div class=\"result\">" +
+		+ link + "\" class=\"result\">" + 
+		"<div>" +
 		"<h3>"+title+"</h3>" +
 		"<p>" + description + "</p>" +
 		"</div></a>" );
 }
 
-		</script>
-	</body>
+	</script>
+</body>
 </html>
