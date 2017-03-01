@@ -1,3 +1,8 @@
+html {
+	min-height:100%;
+	background:linear-gradient(to bottom, #87e0fd 0%,#53cbf1 40%,#05abe0 100%);
+}
+
 /* remove link styling for results */
 #results a {
 	text-decoration: none;
@@ -13,6 +18,8 @@
 }
 
 #search {
+	margin-top:15px;
+	margin-bottom:15px;
 	flex: 0 1 auto;
 }
 
@@ -29,11 +36,19 @@
 /* individual result */
 .result {
 	flex: 0 1 auto;
-	border-style:solid;
 	border-width:1px;
+	border-radius:25px;
 	margin: 5px;
-	padding: 5px;
+	padding: 15px;
 	width:100%;
+}
+
+.result:nth-of-type(odd){
+	background:#4bdda5;
+}
+
+.result:nth-of-type(even){
+	background: #76e8bc;
 }
 
 /* center the title */
@@ -51,6 +66,7 @@
 #query input {
 	flex: 1 1 auto;
 	text-align:center;
+	font-size:150%;
 }
 
 /* container for buttons */
@@ -62,4 +78,5 @@
 
 #buttons button {
 	flex: 1 1 auto;
+	font-size:150%;
 }
