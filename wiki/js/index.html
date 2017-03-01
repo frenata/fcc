@@ -12,10 +12,6 @@
 		<link rel="icon" type="image/x-icon"
 			href="http://quote.frenata.net/favicon.ico" >
 		<link rel="stylesheet" type="text/css" href="style.css" />
-
-		<script src="https://ajax.googleapis.com/ajax/
-			libs/jquery/3.1.1/jquery.min.js">
-		</script>
 	</head>
 <body>
 	<div id="container">
@@ -26,13 +22,7 @@
 					autofocus="true"/>
 				<div id="buttons">
 					<button id="search-btn">Search</button>
-					<button 
-						id="random-btn"
-						onClick="window.open(
-						'https://en.wikipedia.org/wiki/Special:Random'
-						); return false;">
-						Random
-					</button>
+					<button id="random-btn">Random</button>
 				</div>
 			</form>
 			<form id="random"
@@ -49,44 +39,62 @@
 	</div>
 	<script>
 
-$("#query").submit(() => {
-	getWiki($("#query input").val());
-	return false;
-});
+document.querySelector("#query").addEventListener("submit", 
+	(e) => {
+		getWiki(document.querySelector("#query input").value);
+		e.preventDefault();
+	}
+	,false);
+
+document.querySelector("#random-btn").addEventListener("click",
+	(e) => {
+		window.open('https://en.wikipedia.org/wiki/Special:Random');
+		e.preventDefault();
+	}
+	,false);
 
 function getWiki(search) {
 	let url = "https://en.wikipedia.org/w/api.php?" +
 		"action=opensearch&format=json&origin=*&search=" + search;
-	$.getJSON( url, { })
-		.done( response => {
-			console.log(response);
-			let title = response[1];
-			let description = response[2];
-			let link = response[3];
-			writeWikiResults(title,description,link);
-		});
+	
+	getJSON(url, (err,data) => 
+		err != null ?
+			console.log(err) :
+			writeWikiResults(data[1],data[2],data[3])
+	);
 }
 
 function writeWikiResults(title,description,link){
 	clearResults();
-	for(let i=0;i<title.length;i++){
-		appendResult(title[i],description[i],link[i]);
-	}
+
+	title.forEach((_,i) =>
+		appendResult(title[i],description[i],link[i]));
 }
 
 function clearResults() {
-	//$("#results").html("<h2>Results</h2>");
-	$("#results").html("");
+	document.querySelector("#results").innerHTML = "";
 }
 
 function appendResult(title,description,link) {
-	$("#results").append(
+	document.querySelector("#results").innerHTML += 
 		"<a target=\"_blank\" href=\"" 
 		+ link + "\" class=\"result\">" + 
 		"<div>" +
 		"<h3>"+title+"</h3>" +
 		"<p>" + description + "</p>" +
-		"</div></a>" );
+		"</div></a>";
+}
+
+function getJSON(url, callback) {
+	let xhr = new XMLHttpRequest();
+
+	xhr.open("GET", url, true);
+	xhr.responseType = "json";
+	xhr.onload = () => 
+		xhr.status == 200 ?
+			callback(null, xhr.response) :
+			callback(status);
+	xhr.send();
 }
 
 	</script>
