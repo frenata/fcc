@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Wiki Viewer</title>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="http://quote.frenata.net/favicon.ico" >
+		<link rel="icon" type="image/x-icon"
+			href="http://quote.frenata.net/favicon.ico" >
+		<script src="https://ajax.googleapis.com/ajax/
+			libs/jquery/3.1.1/jquery.min.js">
+		</script>
+
+		<style>
+a {
+	text-decoration: none;
+	color:inherit;
+}
+		</style>
+
+	</head>
+	<body>
+
+		<div id="search">
+			<form>
+				<input 
+					id="query" 
+					placeholder="Search the Wiki!" 
+					autofocus="true"/>
+				<button id="queryb">Search</button>
+			</form>
+			<form 
+				action="https://en.wikipedia.org/wiki/Special:Random"
+				method="get"
+				target="_blank">
+				<button id="random" >Random</button>
+			</form>
+		</div>
+
+		<div id="results">
+			<h2>Results</h2>
+		</div>
+
+		<script>
+
+$("#search").submit(() => {
+	getWiki($("#query").val());
+	return false;
+});
+
+function getWiki(search) {
+	let url = "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&search=" + search;
+	$.getJSON( url, { })
+		.done( response => {
+			console.log(response);
+			let title = response[1];
+			let description = response[2];
+			let link = response[3];
+			writeWikiResults(title,description,link);
+		});
+}
+
+function writeWikiResults(title,description,link){
+	clearResults();
+	for(let i=0;i<title.length;i++){
+		appendResult(title[i],description[i],link[i]);
+	}
+}
+
+function clearResults() {
+	$("#results").html("");
+}
+
+function appendResult(title,description,link) {
+	$("#results").append(
+		"<a target=\"_blank\" href=\"" 
+		+ link + "\">" + 
+		"<div class=\"result\">" +
+		"<h3>"+title+"</h3>" +
+		"<p>" + description + "</p>" +
+		"</div></a>" );
+}
+
+		</script>
+	</body>
+</html>

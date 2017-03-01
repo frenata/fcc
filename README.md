@@ -7,6 +7,7 @@
 2. Weather
  - [x] [Elm](http://weather-elm.frenata.net)
 3. Wikipedia
+ - [x] [jQuery](http://wiki-js.frenata.net)
 4. Twitch
 
 ###Advanced
