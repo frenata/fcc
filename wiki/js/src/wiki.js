@@ -9,7 +9,7 @@ document.querySelector("#query").addEventListener("submit",
 // open random page when clicking "Random" button
 document.querySelector("#random-btn").addEventListener("click",
 	(e) => {
-		window.open('https://en.wikipedia.org/wiki/Special:Random');
+		window.open("https://en.wikipedia.org/wiki/Special:Random");
 		e.preventDefault();
 	}
 	,false);
@@ -21,7 +21,7 @@ function getWiki(search) {
 	
 	getJSON(url, (err,data) => 
 		err != null ?
-			console.log(err) :
+			alert(err) :
 			writeWikiResults(data[1],data[2],data[3])
 	);
 }
@@ -42,12 +42,12 @@ function clearResults() {
 // build a div containing a result and add it to the list
 function appendResult(title,description,link) {
 	document.querySelector("#results").innerHTML += 
-		`<a target="_blank" href="${link}" class="result">` +
-		`<div>` + 
-		`<h3>${title}</h3>` +
-		`<p>${description}</p>` +
-		`</div>` +
-		`</a>`;
+		`<a target="_blank" href="${link}" class="result">
+			<div>
+				<h3>${title}</h3>
+				<p>${description}</p>
+			</div>
+		</a>`;
 }
 
 // pull from a JSON API
