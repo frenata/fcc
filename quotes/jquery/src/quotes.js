@@ -15,8 +15,8 @@ function getQuote() {
 
 // write the quote to the page and to the twitter 'share intent'
 function setQuote(text, by){
-	$("#quote").html(text)
-	$("#cite").html("- " + by)
+	$("#quote").html(text);
+	$("#cite").html("- " + by);
 
 	document.querySelector("#tweet")
 		.setAttribute("href", 
@@ -28,7 +28,7 @@ function setQuote(text, by){
 // from MDN page on EncodeURIComponent
 function fixedEncodeURIComponent(str) {
 	return encodeURIComponent(str).replace(/[!'()*]/g, 
-		c => '%' + c.charCodeAt(0).toString(16));
+		c => "%" + c.charCodeAt(0).toString(16));
 }
 
 // pull new quote on button click
