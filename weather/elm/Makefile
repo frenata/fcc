@@ -2,8 +2,8 @@ SRC = src
 BUILD = build
 MAIN = weather
 ASSETS = assets
-CSS = assets/css
-FONTS = assets/font
+CSS = $(SRC)/css
+FONTS = $(ASSETS)/font
 
 all: build deploy clean
 
