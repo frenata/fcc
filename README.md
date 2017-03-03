@@ -6,8 +6,9 @@
  - [x] [Elm](http://quotes-elm.frenata.net)
 2. Weather
  - [x] [Elm](http://weather-elm.frenata.net)
-3. Wikipedia
+3. Wikipedia :white_check_mark:
  - [x] [JS](http://wiki-js.frenata.net)
+ - [x] [Elm](http://wiki-elm.frenata.net)
 4. Twitch
 
 ###Advanced

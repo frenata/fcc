@@ -1,0 +1,82 @@
+html {
+	min-height:100%;
+	background:linear-gradient(to bottom, #87e0fd 0%,#53cbf1 40%,#05abe0 100%);
+}
+
+/* remove link styling for results */
+#results a {
+	text-decoration: none;
+	color:inherit;
+}
+
+/* main page container */
+#container {
+	display:flex;
+	flex-direction:column;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+#search {
+	margin-top:15px;
+	margin-bottom:15px;
+	flex: 0 1 auto;
+}
+
+/* list of results */
+#results {
+	flex: 0 1 auto;
+	display:flex;
+	flex-direction:column;
+	justify-content: flex-start;
+	align-items: center;
+	width:75%;
+}
+
+/* individual result */
+.result {
+	flex: 0 1 auto;
+	border-width:1px;
+	border-radius:25px;
+	margin: 5px;
+	padding: 15px;
+	width:100%;
+}
+
+.result:nth-of-type(odd){
+	background:#4bdda5;
+}
+
+.result:nth-of-type(even){
+	background: #76e8bc;
+}
+
+/* center the title */
+.result h3 {
+	text-align:center;
+}
+
+/* container for search input and buttons */
+#query {
+	display:flex;
+	flex-direction:column;
+	justify-content:flex-start;
+}
+
+#query input {
+	flex: 1 1 auto;
+	text-align:center;
+	font-size:150%;
+}
+
+/* container for buttons */
+#buttons {
+	flex: 1 1 auto;
+	display:flex;
+	flex-direction:row;
+}
+
+#buttons button {
+	flex: 1 1 auto;
+	font-size:150%;
+}
