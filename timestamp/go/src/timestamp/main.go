@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"io"
+	"net/http"
+)
+
+func hello(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "Hello World")
+}
 
 func main() {
-	fmt.Println("vim-go")
+	http.HandleFunc("/", hello)
+	http.ListenAndServe(":443", nil)
 }
