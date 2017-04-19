@@ -25,6 +25,9 @@ will deliver the response:
 }
 
 Several date formats are supported, try experimenting!
+
+Source code can be found at:
+https://github.com/frenata/fcc/tree/master/timestamp/go
 `
 
 // JSON response
