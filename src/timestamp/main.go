@@ -12,5 +12,5 @@ func hello(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", hello)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":80", nil))
 }
