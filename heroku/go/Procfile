@@ -1,0 +1,4 @@
+# hello is the name of a runnable go binary. 
+# A go `package main` with a `main` function will be compiled 
+# into a binary named after its containing directory.
+web: hello
