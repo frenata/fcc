@@ -13,8 +13,8 @@ func headers(w http.ResponseWriter, r *http.Request) {
 	head := r.Header
 	log.Println(head.Get("Remote_Addr"))
 
-	for key, _ := range head {
-		log.Println(key)
+	for key, value := range head {
+		log.Printf("key: %s value: %s", key, value)
 	}
 
 	io.WriteString(w, "Request Headers Microservice")
