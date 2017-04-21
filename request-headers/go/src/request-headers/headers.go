@@ -6,18 +6,21 @@ import (
 	"strings"
 )
 
+// HeadersResponse contains the desired header information
 type HeadersResponse struct {
 	Ip   *string `json:"ipaddress"`
 	Lang *string `json:"language"`
 	Os   *string `json:"software"`
 }
 
+// pretty print the values in JSON format
 func (hr HeadersResponse) String() string {
 	json, _ := json.MarshalIndent(hr, "", "    ")
 	return string(json)
 }
 
-func getHeaders(headers http.Header) string {
+// GetHeaders parses the desired information and returns a JSON object
+func GetHeaders(headers http.Header) string {
 	ip := getIP(headers)
 	lang := getLanguage(headers)
 	os := getOS(headers)
@@ -25,6 +28,7 @@ func getHeaders(headers http.Header) string {
 	return HeadersResponse{ip, lang, os}.String()
 }
 
+// Try getting the IP address from one of several possible headers
 func getIP(headers http.Header) *string {
 	possibleKeys := []string{"Remote_Addr", "Client-IP", "X-Forwarded-For"}
 
@@ -41,6 +45,7 @@ func getIP(headers http.Header) *string {
 	return nil
 }
 
+// Get the Accept-Language header and parse the first locale
 func getLanguage(headers http.Header) *string {
 	language := headers.Get("Accept-Language")
 	if language != "" {
@@ -52,6 +57,7 @@ func getLanguage(headers http.Header) *string {
 	return nil
 }
 
+// Get the User-Agent header and parse the OS information
 func getOS(headers http.Header) *string {
 	os := headers.Get("User-Agent")
 	if os != "" {
