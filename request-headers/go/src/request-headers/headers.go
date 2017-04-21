@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 type HeadersResponse struct {
@@ -22,8 +23,6 @@ func getHeaders(headers http.Header) string {
 	os := getOS(headers)
 
 	return HeadersResponse{ip, lang, os}.String()
-	//return fmt.Sprintf("Your IP address: %s\nYour language: %s\nYour OS: %s\n",
-	//ip, lang, os)
 }
 
 func getIP(headers http.Header) *string {
@@ -41,6 +40,8 @@ func getIP(headers http.Header) *string {
 func getLanguage(headers http.Header) *string {
 	language := headers.Get("Accept-Language")
 	if language != "" {
+		comma := strings.Index(language, ",")
+		language = language[:comma]
 		return &language
 	}
 
@@ -50,6 +51,9 @@ func getLanguage(headers http.Header) *string {
 func getOS(headers http.Header) *string {
 	os := headers.Get("User-Agent")
 	if os != "" {
+		open := strings.Index(os, "(")
+		close := strings.Index(os, ")")
+		os = os[open+1 : close]
 		return &os
 	}
 
