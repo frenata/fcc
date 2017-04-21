@@ -30,6 +30,10 @@ func getIP(headers http.Header) *string {
 
 	for _, key := range possibleKeys {
 		if ip := headers.Get(key); ip != "" {
+			comma := strings.Index(ip, ",")
+			if comma != -1 {
+				ip = ip[:comma]
+			}
 			return &ip
 		}
 	}
