@@ -3,14 +3,14 @@ $(() => getQuote());
 
 // retrieve a quote from the API
 function getQuote() {
-	let qodAPI = "http://quotesondesign.com/wp-json/posts?filter" +
-		"[orderby]=rand&filter[posts_per_page]=1&_jsonp=?";
-	$.getJSON( qodAPI, { })
-		.done( response => {
-			let text = response[0].content;
-			let by = response[0].title;
-			setQuote(text,by);
-		});
+	let trumpAPI = "https://api.whatdoestrumpthink.com/api/v1/quotes/random/";
+
+	$.getJSON( trumpAPI, response => {
+		let text = response.message;
+		let by = "Trump?!";
+		setQuote(text,by);
+	});
+
 }
 
 // write the quote to the page and to the twitter 'share intent'
@@ -33,3 +33,4 @@ function fixedEncodeURIComponent(str) {
 
 // pull new quote on button click
 $("#new-quote").click(() => getQuote());
+
