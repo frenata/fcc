@@ -26,6 +26,15 @@
 1. Timestamp
  - [x] [Go](https://timestamp-go.herokuapp.com/)
 2. Request Headers
+ - [x] [Go](https://request-headers-go.herokuapp.com/)
 3. URL Shortener
 4. Image Search Abstraction
 5. File Metadata
+
+### Dynamic Web Apps
+
+1. Voting
+2. Nightlife
+3. Stock Market
+4. Book Club
+5. Pinterest
