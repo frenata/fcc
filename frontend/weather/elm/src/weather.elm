@@ -102,7 +102,7 @@ pullWeatherFromLocation : Location -> Cmd Msg
 pullWeatherFromLocation location =
     let
         url =
-            "http://api.openweathermap.org/data/2.5/weather"
+            "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather"
                 ++ "?lat="
                 ++ toString location.latitude
                 ++ "&lon="
@@ -121,7 +121,7 @@ pullWeatherFromCity city =
         _ ->
             let
                 url =
-                    "http://api.openweathermap.org/data/2.5/weather"
+                    "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather"
                         ++ "?type=like&q="
                         ++ city
                         ++ "&APPID=d27113dcf76a61aee27d2ce328629630"
