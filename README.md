@@ -5,12 +5,12 @@
 
 1. Quotes :white_check_mark:
  - [x] [jQuery](http://quotes-js.frenata.net)
- - [x] [Elm](http://quotes-elm.frenata.net)
+ - [x] [Elm]
 2. Weather
- - [x] [Elm](http://weather-elm.frenata.net)
+ - [x] [Elm]
 3. Wikipedia :white_check_mark:
  - [x] [JS](http://wiki-js.frenata.net)
- - [x] [Elm](http://wiki-elm.frenata.net)
+ - [x] [Elm]
 4. Twitch
 
 ### Advanced
