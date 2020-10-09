@@ -5,6 +5,6 @@
     "babel-cli": "^6.23.0",
     "babel-preset-env": "^1.1.11",
     "eslint": "^3.16.1",
-    "uglifyjs": "^2.4.10"
+    "uglify-js": "^3.11.1"
   }
 }
